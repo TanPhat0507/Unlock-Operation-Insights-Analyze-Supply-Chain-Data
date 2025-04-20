@@ -3,7 +3,9 @@ Understanding supply chain operations and sales performance is crucial for busin
 
 # 📊Dashboard:
 ✨ Sales analysis
+
 ✨ Customer analysis
+
 ✨ Order analysis
 
 💪This challenge was a valuable experience that strengthened my analytical thinking, problem-solving, and data visualization skills. I'm eager to apply this same energy and impact in a professional team setting. I would like to sincerely thank Mr. Hieu Nguyen Trung (Maz), Mr. Tô Trọng Kiên, and Ms. Phuong Vu for their invaluable feedback, which greatly contributed to the completion of this final product.
