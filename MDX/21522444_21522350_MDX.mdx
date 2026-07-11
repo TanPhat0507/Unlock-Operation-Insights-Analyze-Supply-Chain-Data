@@ -1,0 +1,225 @@
+﻿-- 1. Roll up: Calculate total sales by category
+ SELECT NON EMPTY { [Measures].[Sales] } ON COLUMNS, 
+		NON EMPTY { ([Dim Product].[Category].[Category].ALLMEMBERS ) }  ON ROWS 
+ FROM [Olap Warehouse] ;
+
+-- 2. Drill down: Calculate total sales by sub-category
+ SELECT NON EMPTY { [Measures].[Sales] } ON COLUMNS, 
+		NON EMPTY { ([Dim Product].[Sub Category].[Sub Category].ALLMEMBERS ) } 
+ ON ROWS FROM [Olap Warehouse];
+
+-- 3. Slice: Calculate total sales by customer and region in East
+ SELECT 
+ NON EMPTY { [Measures].[Sales] } ON COLUMNS, 
+ NON EMPTY { ([Dim Region].[Region].[Region].ALLMEMBERS * [Dim Customer].[Customer Name].[Customer Name].ALLMEMBERS ) } ON ROWS
+FROM ( SELECT ( { [Dim Region].[Region].&[East] } ) ON COLUMNS 
+FROM [Olap Warehouse]);
+
+-- 4. Dice: Find the sales by customer in Category = "Office Supplies" & SubCategory = "Art"
+SELECT 
+    NON EMPTY 
+        [Dim Customer].[Customer Name].Members ON ROWS,
+    NON EMPTY 
+        [Measures].[Sales] ON COLUMNS
+FROM 
+    [Olap Warehouse]
+WHERE 
+    (
+        [Dim Product].[Category].[Office Supplies],
+        [Dim Product].[Sub Category].[Art]
+    );
+ -- 5. Pivot: Calculate total cost by each region in each category
+ SELECT 
+  NON EMPTY 
+    [Dim Product].[Category].[Category].Members ON COLUMNS,
+  NON EMPTY 
+    [Dim Region].[Region].[Region].Members ON ROWS
+FROM 
+  [Olap Warehouse]
+WHERE 
+  ([Measures].[Cost]);
+
+ -- 6. Calculate the percentage of return rate from total order
+WITH 
+-- Tổng số đơn hàng duy nhất
+MEMBER [Measures].[TotalOrders] AS
+    DISTINCTCOUNT([Dim Order].[Order ID].[Order ID].MEMBERS)
+
+-- Đếm số đơn hàng mà **mọi dòng fact đều là Returned = 'Yes'**
+MEMBER [Measures].[FullyReturnedOrders] AS
+    COUNT(
+        FILTER(
+            [Dim Order].[Order ID].[Order ID].MEMBERS,
+            (
+                ([Measures].[Fact Count], [Returned].[Returned].[No]) = 0
+                AND
+                ([Measures].[Fact Count], [Returned].[Returned].[Yes]) > 0
+            )
+        )
+    )
+
+-- Tính % đơn hàng bị trả hoàn toàn
+MEMBER [Measures].[ReturnRatePercent] AS
+    IIF(
+        [Measures].[TotalOrders] = 0,
+        NULL,
+        [Measures].[FullyReturnedOrders] * 1.0 / [Measures].[TotalOrders]
+    ),
+    FORMAT_STRING = "Percent"
+
+SELECT 
+{
+    [Measures].[TotalOrders],
+    [Measures].[FullyReturnedOrders],
+    [Measures].[ReturnRatePercent]
+} ON COLUMNS
+
+FROM [Olap Warehouse];
+
+-- 7. Find return rate by region
+WITH 
+-- Tổng số đơn hàng theo Region
+MEMBER [Measures].[TotalOrdersByRegion] AS
+    COUNT(
+        NONEMPTY(
+            [Dim Order].[Order ID].[Order ID].MEMBERS,
+            [Measures].[Fact Count]
+        )
+    )
+
+-- Số đơn hàng bị trả lại hoàn toàn theo Region
+MEMBER [Measures].[FullyReturnedOrders] AS
+    COUNT(
+        FILTER(
+            NONEMPTY(
+                [Dim Order].[Order ID].[Order ID].MEMBERS,
+                [Measures].[Fact Count]
+            ),
+            ([Measures].[Fact Count], [Dim Returned].[Returned].[No]) = 0
+            AND ([Measures].[Fact Count], [Dim Returned].[Returned].[Yes]) > 0
+        )
+    )
+
+-- Tỷ lệ trả hàng = FullyReturned / TotalOrders
+MEMBER [Measures].[ReturnRateByRegion] AS
+    IIF(
+        [Measures].[TotalOrdersByRegion] = 0,
+        NULL,
+        [Measures].[FullyReturnedOrders] * 1.0 / [Measures].[TotalOrdersByRegion]
+    ),
+	FORMAT_STRING = "Percent"
+
+SELECT 
+    {
+        [Measures].[FullyReturnedOrders],
+        [Measures].[TotalOrdersByRegion],
+        [Measures].[ReturnRateByRegion]
+    } ON COLUMNS,
+
+    ORDER(
+        [Dim Region].[Region].[Region].MEMBERS,
+        [Measures].[ReturnRateByRegion],
+        DESC
+    ) ON ROWS
+
+FROM [Olap Warehouse];
+
+-- 8. Top 5 sub-categories that have high returned rate
+WITH 
+-- Tổng số đơn hàng theo từng SubCategory
+MEMBER [Measures].[TotalOrdersBySubCategory] AS
+    COUNT(
+        NONEMPTY(
+            [Dim Order].[Order ID].[Order ID].MEMBERS,
+            [Measures].[Fact Count]
+        )
+    )
+
+-- Số đơn hàng bị trả hoàn toàn theo từng SubCategory
+MEMBER [Measures].[FullyReturnedOrdersBySubCategory] AS
+    COUNT(
+        FILTER(
+            NONEMPTY(
+                [Dim Order].[Order ID].[Order ID].MEMBERS,
+                [Measures].[Fact Count]
+            ),
+            ([Measures].[Fact Count], [Returned].[Returned].[No]) = 0
+            AND ([Measures].[Fact Count], [Returned].[Returned].[Yes]) > 0
+        )
+    )
+
+-- Tỷ lệ trả hàng theo từng SubCategory
+MEMBER [Measures].[ReturnRateBySubCategory] AS
+    IIF(
+        [Measures].[TotalOrdersBySubCategory] = 0,
+        NULL,
+        [Measures].[FullyReturnedOrdersBySubCategory] * 1.0 / [Measures].[TotalOrdersBySubCategory]
+    ),
+    FORMAT_STRING = "Percent"
+
+SELECT 
+    {
+        [Measures].[FullyReturnedOrdersBySubCategory],
+        [Measures].[TotalOrdersBySubCategory],
+        [Measures].[ReturnRateBySubCategory]
+    } ON COLUMNS,
+
+    TOPCOUNT(
+        [Dim Product].[Sub Category].[Sub Category].MEMBERS,
+        5,
+        [Measures].[ReturnRateBySubCategory]
+    ) ON ROWS
+
+FROM [Olap Warehouse];
+
+-- 9. Find the maximum of delivery time
+ SELECT NON EMPTY { [Measures].[Days] } ON COLUMNS 
+ FROM [Olap Warehouse];
+
+-- 10. Calculate return rate of each customer segmentation
+WITH 
+-- Tổng số đơn hàng theo Segment
+MEMBER [Measures].[TotalOrdersBySegment] AS
+    COUNT(
+        NONEMPTY(
+            [Dim Order].[Order ID].[Order ID].MEMBERS,
+            [Measures].[Fact Count]
+        )
+    )
+
+-- Số đơn hàng bị trả hoàn toàn theo Segment
+MEMBER [Measures].[ReturnedOrdersBySegment] AS
+    COUNT(
+        FILTER(
+            NONEMPTY(
+                [Dim Order].[Order ID].[Order ID].MEMBERS,
+                [Measures].[Fact Count]
+            ),
+            ([Measures].[Fact Count], [Dim Returned].[Returned].[No]) = 0
+            AND ([Measures].[Fact Count], [Dim Returned].[Returned].[Yes]) > 0
+        )
+    )
+
+-- Tỷ lệ trả hàng theo Segment
+MEMBER [Measures].[ReturnRateBySegment] AS
+    IIF(
+        [Measures].[TotalOrdersBySegment] = 0,
+        NULL,
+        [Measures].[ReturnedOrdersBySegment] * 1.0 / [Measures].[TotalOrdersBySegment]
+    ),
+	FORMAT_STRING = "Percent"
+
+SELECT 
+    {
+        [Measures].[ReturnedOrdersBySegment],
+        [Measures].[TotalOrdersBySegment],
+        [Measures].[ReturnRateBySegment]
+    } ON COLUMNS,
+
+    ORDER(
+        [Dim Customer].[Segment].[Segment].MEMBERS,
+        [Measures].[ReturnRateBySegment],
+        DESC
+    ) ON ROWS
+
+FROM [Olap Warehouse];

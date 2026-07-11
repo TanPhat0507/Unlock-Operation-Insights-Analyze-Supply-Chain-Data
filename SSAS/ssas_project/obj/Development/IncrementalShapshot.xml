@@ -1,0 +1,96 @@
+﻿<DeploymentSnapshot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ddl2="http://schemas.microsoft.com/analysisservices/2003/engine/2" xmlns:ddl2_2="http://schemas.microsoft.com/analysisservices/2003/engine/2/2" xmlns:ddl100_100="http://schemas.microsoft.com/analysisservices/2008/engine/100/100" xmlns:ddl200="http://schemas.microsoft.com/analysisservices/2010/engine/200" xmlns:ddl200_200="http://schemas.microsoft.com/analysisservices/2010/engine/200/200" xmlns:ddl300="http://schemas.microsoft.com/analysisservices/2011/engine/300" xmlns:ddl300_300="http://schemas.microsoft.com/analysisservices/2011/engine/300/300" xmlns:ddl400="http://schemas.microsoft.com/analysisservices/2012/engine/400" xmlns:ddl400_400="http://schemas.microsoft.com/analysisservices/2012/engine/400/400" xmlns:ddl500="http://schemas.microsoft.com/analysisservices/2013/engine/500" xmlns:ddl500_500="http://schemas.microsoft.com/analysisservices/2013/engine/500/500" xmlns:dwd="http://schemas.microsoft.com/DataWarehouse/Designer/1.0">
+  <Target>
+    <Database>ssas_project</Database>
+    <Server>WINDOWS-PC\SSAS2022</Server>
+    <ConnectionString>Data Source=WINDOWS-PC\SSAS2022;Timeout=0</ConnectionString>
+  </Target>
+  <Options>
+    <TransactionalDeployment>false</TransactionalDeployment>
+    <PartitionDeployment>DeployPartitions</PartitionDeployment>
+    <RoleDeployment>DeployRolesRetainMembers</RoleDeployment>
+    <ProcessingOption>DoNotProcess</ProcessingOption>
+    <OutputScript></OutputScript>
+    <ImpactAnalysisFile></ImpactAnalysisFile>
+    <ConfigurationSettingsDeployment>Deploy</ConfigurationSettingsDeployment>
+    <OptimizationSettingsDeployment>Deploy</OptimizationSettingsDeployment>
+    <WriteBackTableCreation>UseExisting</WriteBackTableCreation>
+  </Options>
+  <Snapshot>
+    <ObjectSnapshots>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.RelationalDataSource</Type>
+        <TimeStamp>c79vUqR7CjKDf2Wh8z6BFfzoyw4=5/26/2025 3:14:42 PM5/26/2025 3:14:42 PM</TimeStamp>
+        <ID>
+          <String>Olap Warehouse</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.DataSourceView</Type>
+        <TimeStamp>uaRM0jndBwDZuq7Z2X7/T2QhcWU=5/26/2025 3:14:58 PM5/26/2025 3:14:58 PM</TimeStamp>
+        <ID>
+          <String>Olap Warehouse</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>MoSrXkV7a/to9162mxIIYuSxiOo=5/26/2025 3:15:12 PM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Dim Order</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>1WjgfJvnb9tt/pPzFakdfs0qMVw=5/29/2025 12:51:57 AM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Dim Customer</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>04XDvfy297Wznqs4Zv6w+ac0AAw=5/26/2025 3:16:09 PM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Dim Product</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>NUU0cUMHm8eUFs87rWx4TW37EOI=5/26/2025 3:15:12 PM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Dim Region</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>mNPXb/tE5ezz7zQ5evCqp9wQWxI=5/26/2025 3:15:12 PM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Dim Retail Sales People</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>hXENR9vYxmSomHsx1C7RC4OB+l8=5/26/2025 3:15:12 PM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Dim Returned</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Cube</Type>
+        <TimeStamp>hhe40jPlKP7T116FVwGeIsi/tbA=5/29/2025 12:51:57 AM5/26/2025 3:15:12 PM0KJ6onzPTtOxFC7HNtvQFzlC0BE=5/26/2025 3:15:12 PM5/26/2025 3:15:12 PM</TimeStamp>
+        <ID>
+          <String>Olap Warehouse</String>
+        </ID>
+      </ObjectSnapshot>
+    </ObjectSnapshots>
+    <DatabaseSnapshot>
+      <Type>Microsoft.AnalysisServices.Database</Type>
+      <TimeStamp>J6LW64pSX5208ghmaRAOsRtvhJM=5/26/2025 11:41:58 AM5/26/2025 11:41:58 AM</TimeStamp>
+      <ID>
+        <String>ssas_project</String>
+      </ID>
+    </DatabaseSnapshot>
+    <Granularity>Coarse</Granularity>
+  </Snapshot>
+  <AssemblyLocations />
+  <ProcessingComplete>true</ProcessingComplete>
+  <LastDeployed>2025-05-29T16:47:56.42Z</LastDeployed>
+</DeploymentSnapshot>
